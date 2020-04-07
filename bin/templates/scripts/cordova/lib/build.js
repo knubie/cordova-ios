@@ -262,12 +262,14 @@ module.exports.run = buildOpts => {
             const buildOutputDir = path.join(projectPath, 'build', 'device');
 
             function checkSystemRuby () {
-                const ruby_cmd = shell.which('ruby');
+                const which_ruby = shell.which('ruby');
+                const rbenv_local = shell.exec('rbenv local').output;
 
-                if (ruby_cmd !== '/usr/bin/ruby') {
+                if (which_ruby !== '/usr/bin/ruby' && rbenv_local !== 'system\n') {
                     events.emit('warn', 'Non-system Ruby in use. This may cause packaging to fail.\n' +
                   'If you use RVM, please run `rvm use system`.\n' +
-                  'If you use chruby, please run `chruby system`.');
+                  'If you use chruby, please run `chruby system`.\n' +
+                  'If you use rbenv, please run `rbenv local system`.');
                 }
             }
 
